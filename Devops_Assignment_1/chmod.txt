@@ -1,8 +1,0 @@
-varun@LAPTOP-19ISMTVG:~/desktop_Linux$ ls -l file.txt
--rw-r--r-- 1 varun varun 23 Jun  8 07:23 file.txt
-varun@LAPTOP-19ISMTVG:~/desktop_Linux$ chmod u=rwx,g=rx,o=r file.txt
-varun@LAPTOP-19ISMTVG:~/desktop_Linux$ ls -l file.txt
--rwxr-xr-- 1 varun varun 23 Jun  8 07:23 file.txt
-varun@LAPTOP-19ISMTVG:~/desktop_Linux$
-
-//Here we can see that permissions are changed for a particular file.

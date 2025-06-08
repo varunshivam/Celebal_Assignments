@@ -1,0 +1,15 @@
+varun@LAPTOP-19ISMTVG:~/desktop_Linux$ mkdir explore
+varun@LAPTOP-19ISMTVG:~/desktop_Linux$ cd explore
+varun@LAPTOP-19ISMTVG:~/desktop_Linux/explore$ cd ..
+varun@LAPTOP-19ISMTVG:~/desktop_Linux$ ls
+explore  file.txt
+varun@LAPTOP-19ISMTVG:~/desktop_Linux$ rm file.txt
+varun@LAPTOP-19ISMTVG:~/desktop_Linux$ ls
+explore
+varun@LAPTOP-19ISMTVG:~/desktop_Linux$ touch newfile.txt
+varun@LAPTOP-19ISMTVG:~/desktop_Linux$ echo hello world >> newfile.txt
+varun@LAPTOP-19ISMTVG:~/desktop_Linux$ cat newfile.txt
+hello world
+varun@LAPTOP-19ISMTVG:~/desktop_Linux$
+
+//Here we have used linux commands like (mkdir, cd, ls, touch, cat,echo)

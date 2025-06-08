@@ -1,0 +1,60 @@
+## Creating a new branch named as newone
+## creating same named file in master and newone branch to perform  Merge_conflict.
+
+varun@LAPTOP-191SMTVG:~/desktop/Assignments/Devops_Assignment_1$ git branch newone
+varun@LAPTOP-191SMTVG:~/desktop/Assignments/Devops_Assignment_1$ touch Merge_conflict.txt
+varun@LAPTOP-191SMTVG:~/desktop/Assignments/Devops_Assignment_1$ ls
+Linux_cmds.txt  Merge_conflict.txt  UserCreation.txt  chmod.txt  commitRemoval.txt  gitCmd.txt
+varun@LAPTOP-191SMTVG:~/desktop/Assignments/Devops_Assignment_1$ vi Merge_conflict.txt
+
+##Resolving Merge_conflict
+
+varun@LAPTOP-191SMTVG:~/desktop/Assignments/Devops_Assignment_1$ git switch newone
+Switched to branch 'newone'
+varun@LAPTOP-191SMTVG:~/desktop/Assignments/Devops_Assignment_1$ ls
+Linux_cmds.txt  UserCreation.txt  chmod.txt  commitRemoval.txt  gitCmd.txt  merge.txt  navigatio
+varun@LAPTOP-191SMTVG:~/desktop/Assignments/Devops_Assignment_1$ touch Merge_conflict.txt
+varun@LAPTOP-191SMTVG:~/desktop/Assignments/Devops_Assignment_1$ vi Merge_conflict.txt
+varun@LAPTOP-191SMTVG:~/desktop/Assignments/Devops_Assignment_1$ git status
+On branch newone
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+        Merge_conflict.txt
+
+nothing added to commit but untracked files present (use "git add" to track)
+varun@LAPTOP-191SMTVG:~/desktop/Assignments/Devops_Assignment_1$ git add .
+warning: in the working copy of 'Devops_Assignment_1/Merge_conflict.txt', LF will be replaced by
+varun@LAPTOP-191SMTVG:~/desktop/Assignments/Devops_Assignment_1$ git commit -m"Added file in new
+[newone 835a070] Added file in newone branch with same name
+ 1 file changed, 2 insertions(+)
+ create mode 100644 Devops_Assignment_1/Merge_conflict.txt
+varun@LAPTOP-191SMTVG:~/desktop/Assignments/Devops_Assignment_1$ git switch master
+Switched to branch 'master'
+Your branch is up to date with 'origin/master'.
+varun@LAPTOP-191SMTVG:~/desktop/Assignments/Devops_Assignment_1$ git merge newone
+Auto-merging Devops_Assignment_1/Merge_conflict.txt
+CONFLICT (add/add): Merge conflict in Devops_Assignment_1/Merge_conflict.txt
+Automatic merge failed; fix conflicts and then commit the result.
+varun@LAPTOP-191SMTVG:~/desktop/Assignments/Devops_Assignment_1$ cat Merge_conflict.txt
+<<<<<<< HEAD
+hello world
+=======
+Learning devops
+
+>>>>>>> newone
+
+varun@LAPTOP-191SMTVG:~/desktop/Assignments/Devops_Assignment_1$ vi Merge_conflict.txt
+
+varun@LAPTOP-191SMTVG:~/desktop/Assignments/Devops_Assignment_1$ git commit -am "Merge conflict
+[master ef25579] Merge conflict resolved
+varun@LAPTOP-191SMTVG:~/desktop/Assignments/Devops_Assignment_1$ git merge newone
+Already up to date.
+varun@LAPTOP-191SMTVG:~/desktop/Assignments/Devops_Assignment_1$ git status
+On branch master
+Your branch is ahead of 'origin/master' by 2 commits.
+  (use "git push" to publish your local commits)
+
+nothing to commit, working tree clean
+varun@LAPTOP-191SMTVG:~/desktop/Assignments/Devops_Assignment_1$ git push origin master
+Enumerating objects: 13, done.
+

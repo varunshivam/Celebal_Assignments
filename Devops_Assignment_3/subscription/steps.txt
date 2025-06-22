@@ -1,0 +1,106 @@
+✅ 1. Observe Assigned Subscriptions
+Steps:
+
+Sign in to https://portal.azure.com.
+
+Go to the top-right corner, click on your profile → "Switch Directory".
+
+Select the subscription you want to observe.
+
+Then go to Home > Subscriptions.
+
+Select a subscription and observe details like:
+
+Subscription ID
+
+Directory (Tenant)
+
+Roles assigned to you (Access control (IAM) tab)
+
+✅ 2. Observe Azure Entra ID (AAD) or Create a New One
+Steps to Observe Existing AAD:
+
+Go to Home > Microsoft Entra ID (previously Azure AD).
+
+View current tenant name, domain, users, groups, etc.
+
+To Create New Azure Entra ID (Tenant):
+
+Navigate to Microsoft Entra ID > Manage tenants > Create.
+
+Choose Azure Active Directory > Create a new tenant.
+
+Fill in:
+
+Organization name
+
+Initial domain name
+
+Country/Region
+
+Click Create.
+
+You now have a new tenant (Azure Entra ID).
+
+✅ 3. Create Test Users and Groups
+Create Users:
+
+Go to Microsoft Entra ID > Users > + New user.
+
+Choose “Create user”, then fill:
+
+Username
+
+Name
+
+Assign password
+
+Click Create.
+
+Create Groups:
+
+Go to Microsoft Entra ID > Groups > + New group.
+
+Select:
+
+Group type: Security
+
+Group name
+
+Members: Add test users
+
+Click Create.
+
+✅ 4. Assign RBAC Role to User and Test
+Example: Assign Reader Role to a user
+
+Go to Home > Subscriptions > Your Subscription.
+
+Click Access control (IAM) > + Add > Add role assignment.
+
+Role: Reader → Next.
+
+Assign access to: User, group, or service principal
+
+Select your test user → Review + assign.
+
+✅ Test:
+Log in to the portal using the test user. They should only have read-only access to that subscription.
+
+✅ 5. Create a Custom Role and Assign to Users
+Steps:
+
+Go to Home > Subscriptions > Access Control (IAM) > Roles > + Add custom role.
+
+Scope: Assign to your subscription.
+
+Assign this custom role:
+
+Go back to IAM → + Add > Role Assignment.
+
+Choose your custom role
+
+Assign to your test user.
+
+✅ Test:
+Log in as the user and verify they can only view VMs.

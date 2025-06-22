@@ -1,0 +1,486 @@
+ Step 1: Create a Resource Group
+
+ Command to use :
+
+ 
+C:\Users\tarun>az group create --name clibased --location eastus
+
+
+{
+  "id": "/subscriptions/1b7c0632-e0bb-4852-a555-579cd8c2208e/resourceGroups/clibased",
+  "location": "eastus",
+  "managedBy": null,
+  "name": "clibased",
+  "properties": {
+    "provisioningState": "Succeeded"
+  },
+  "tags": null,
+  "type": "Microsoft.Resources/resourceGroups"
+}
+
+Step 2: Create a Virtual Network and Subnet
+
+Command to use :
+
+C:\Users\tarun>az network vnet create --resource-group clibased --name MyVNet --address-prefix 10.1.0.0/16 --subnet-name MySubnet --subnet-prefix 10.1.0.0/24
+
+
+{
+  "newVNet": {
+    "addressSpace": {
+      "addressPrefixes": [
+        "10.1.0.0/16"
+      ]
+    },
+    "enableDdosProtection": false,
+    "etag": "W/\"6d50ea7b-916b-411b-bbd8-f3f6080cf738\"",
+    "id": "/subscriptions/1b7c0632-e0bb-4852-a555-579cd8c2208e/resourceGroups/clibased/providers/Microsoft.Network/virtualNetworks/MyVNet",
+    "location": "eastus",
+    "name": "MyVNet",
+    "privateEndpointVNetPolicies": "Disabled",
+    "provisioningState": "Succeeded",
+    "resourceGroup": "clibased",
+    "resourceGuid": "a742f3d6-3385-48ae-9475-d0aaf4231017",
+    "subnets": [
+      {
+        "addressPrefix": "10.1.0.0/24",
+        "delegations": [],
+        "etag": "W/\"6d50ea7b-916b-411b-bbd8-f3f6080cf738\"",
+        "id": "/subscriptions/1b7c0632-e0bb-4852-a555-579cd8c2208e/resourceGroups/clibased/providers/Microsoft.Network/virtualNetworks/MyVNet/subnets/MySubnet",
+        "name": "MySubnet",
+        "privateEndpointNetworkPolicies": "Disabled",
+        "privateLinkServiceNetworkPolicies": "Enabled",
+        "provisioningState": "Succeeded",
+        "resourceGroup": "clibased",
+        "type": "Microsoft.Network/virtualNetworks/subnets"
+      }
+    ],
+    "type": "Microsoft.Network/virtualNetworks",
+    "virtualNetworkPeerings": []
+  }
+}
+
+
+Step 3: Create a Public IP Address
+
+Command to use :
+
+C:\Users\tarun>az network public-ip create --resource-group clibased --name MyPublicIP
+[Coming breaking change] In the coming release, the default behavior will be changed as follows when sku is Standard and zone is not provided: For zonal regions, you will get a zone-redundant IP indicated by zones:["1","2","3"]; For non-zonal regions, you will get a non zone-redundant IP indicated by zones:null.
+{
+  "publicIp": {
+    "ddosSettings": {
+      "protectionMode": "VirtualNetworkInherited"
+    },
+    "etag": "W/\"5b0f7a8c-d520-460d-9703-036578099f73\"",
+    "id": "/subscriptions/1b7c0632-e0bb-4852-a555-579cd8c2208e/resourceGroups/clibased/providers/Microsoft.Network/publicIPAddresses/MyPublicIP",
+    "idleTimeoutInMinutes": 4,
+    "ipAddress": "13.90.202.88",
+    "ipTags": [],
+    "location": "eastus",
+    "name": "MyPublicIP",
+    "provisioningState": "Succeeded",
+    "publicIPAddressVersion": "IPv4",
+    "publicIPAllocationMethod": "Static",
+    "resourceGroup": "clibased",
+    "resourceGuid": "9076e97e-2c89-4ed1-97e3-cbc9597124bb",
+    "sku": {
+      "name": "Standard",
+      "tier": "Regional"
+    },
+    "type": "Microsoft.Network/publicIPAddresses"
+  }
+}
+
+✅ 4. Create Network Security Group
+
+C:\Users\tarun>az network nsg create --resource-group clibased --name MyNSG
+
+{
+  "NewNSG": {
+    "defaultSecurityRules": [
+      {
+        "access": "Allow",
+        "description": "Allow inbound traffic from all VMs in VNET",
+        "destinationAddressPrefix": "VirtualNetwork",
+        "destinationAddressPrefixes": [],
+        "destinationPortRange": "*",
+        "destinationPortRanges": [],
+        "direction": "Inbound",
+        "etag": "W/\"1f59e5a9-b2c3-4381-85f9-c05b9fb3f1b3\"",
+        "id": "/subscriptions/1b7c0632-e0bb-4852-a555-579cd8c2208e/resourceGroups/clibased/providers/Microsoft.Network/networkSecurityGroups/MyNSG/defaultSecurityRules/AllowVnetInBound",
+        "name": "AllowVnetInBound",
+        "priority": 65000,
+        "protocol": "*",
+        "provisioningState": "Succeeded",
+        "resourceGroup": "clibased",
+        "sourceAddressPrefix": "VirtualNetwork",
+        "sourceAddressPrefixes": [],
+        "sourcePortRange": "*",
+        "sourcePortRanges": [],
+        "type": "Microsoft.Network/networkSecurityGroups/defaultSecurityRules"
+      },
+      {
+        "access": "Allow",
+        "description": "Allow inbound traffic from azure load balancer",
+        "destinationAddressPrefix": "*",
+        "destinationAddressPrefixes": [],
+        "destinationPortRange": "*",
+        "destinationPortRanges": [],
+        "direction": "Inbound",
+        "etag": "W/\"1f59e5a9-b2c3-4381-85f9-c05b9fb3f1b3\"",
+        "id": "/subscriptions/1b7c0632-e0bb-4852-a555-579cd8c2208e/resourceGroups/clibased/providers/Microsoft.Network/networkSecurityGroups/MyNSG/defaultSecurityRules/AllowAzureLoadBalancerInBound",
+        "name": "AllowAzureLoadBalancerInBound",
+        "priority": 65001,
+        "protocol": "*",
+        "provisioningState": "Succeeded",
+        "resourceGroup": "clibased",
+        "sourceAddressPrefix": "AzureLoadBalancer",
+        "sourceAddressPrefixes": [],
+        "sourcePortRange": "*",
+        "sourcePortRanges": [],
+        "type": "Microsoft.Network/networkSecurityGroups/defaultSecurityRules"
+      },
+      {
+        "access": "Deny",
+        "description": "Deny all inbound traffic",
+        "destinationAddressPrefix": "*",
+        "destinationAddressPrefixes": [],
+        "destinationPortRange": "*",
+        "destinationPortRanges": [],
+        "direction": "Inbound",
+        "etag": "W/\"1f59e5a9-b2c3-4381-85f9-c05b9fb3f1b3\"",
+        "id": "/subscriptions/1b7c0632-e0bb-4852-a555-579cd8c2208e/resourceGroups/clibased/providers/Microsoft.Network/networkSecurityGroups/MyNSG/defaultSecurityRules/DenyAllInBound",
+        "name": "DenyAllInBound",
+        "priority": 65500,
+        "protocol": "*",
+        "provisioningState": "Succeeded",
+        "resourceGroup": "clibased",
+        "sourceAddressPrefix": "*",
+        "sourceAddressPrefixes": [],
+        "sourcePortRange": "*",
+        "sourcePortRanges": [],
+        "type": "Microsoft.Network/networkSecurityGroups/defaultSecurityRules"
+      },
+      {
+        "access": "Allow",
+        "description": "Allow outbound traffic from all VMs to all VMs in VNET",
+        "destinationAddressPrefix": "VirtualNetwork",
+        "destinationAddressPrefixes": [],
+        "destinationPortRange": "*",
+        "destinationPortRanges": [],
+        "direction": "Outbound",
+        "etag": "W/\"1f59e5a9-b2c3-4381-85f9-c05b9fb3f1b3\"",
+        "id": "/subscriptions/1b7c0632-e0bb-4852-a555-579cd8c2208e/resourceGroups/clibased/providers/Microsoft.Network/networkSecurityGroups/MyNSG/defaultSecurityRules/AllowVnetOutBound",
+        "name": "AllowVnetOutBound",
+        "priority": 65000,
+        "protocol": "*",
+        "provisioningState": "Succeeded",
+        "resourceGroup": "clibased",
+        "sourceAddressPrefix": "VirtualNetwork",
+        "sourceAddressPrefixes": [],
+        "sourcePortRange": "*",
+        "sourcePortRanges": [],
+        "type": "Microsoft.Network/networkSecurityGroups/defaultSecurityRules"
+      },
+      {
+        "access": "Allow",
+        "description": "Allow outbound traffic from all VMs to Internet",
+        "destinationAddressPrefix": "Internet",
+        "destinationAddressPrefixes": [],
+        "destinationPortRange": "*",
+        "destinationPortRanges": [],
+        "direction": "Outbound",
+        "etag": "W/\"1f59e5a9-b2c3-4381-85f9-c05b9fb3f1b3\"",
+        "id": "/subscriptions/1b7c0632-e0bb-4852-a555-579cd8c2208e/resourceGroups/clibased/providers/Microsoft.Network/networkSecurityGroups/MyNSG/defaultSecurityRules/AllowInternetOutBound",
+        "name": "AllowInternetOutBound",
+        "priority": 65001,
+        "protocol": "*",
+        "provisioningState": "Succeeded",
+        "resourceGroup": "clibased",
+        "sourceAddressPrefix": "*",
+        "sourceAddressPrefixes": [],
+        "sourcePortRange": "*",
+        "sourcePortRanges": [],
+        "type": "Microsoft.Network/networkSecurityGroups/defaultSecurityRules"
+      },
+      {
+        "access": "Deny",
+        "description": "Deny all outbound traffic",
+        "destinationAddressPrefix": "*",
+        "destinationAddressPrefixes": [],
+        "destinationPortRange": "*",
+        "destinationPortRanges": [],
+        "direction": "Outbound",
+        "etag": "W/\"1f59e5a9-b2c3-4381-85f9-c05b9fb3f1b3\"",
+        "id": "/subscriptions/1b7c0632-e0bb-4852-a555-579cd8c2208e/resourceGroups/clibased/providers/Microsoft.Network/networkSecurityGroups/MyNSG/defaultSecurityRules/DenyAllOutBound",
+        "name": "DenyAllOutBound",
+        "priority": 65500,
+        "protocol": "*",
+        "provisioningState": "Succeeded",
+        "resourceGroup": "clibased",
+        "sourceAddressPrefix": "*",
+        "sourceAddressPrefixes": [],
+        "sourcePortRange": "*",
+        "sourcePortRanges": [],
+        "type": "Microsoft.Network/networkSecurityGroups/defaultSecurityRules"
+      }
+    ],
+    "etag": "W/\"1f59e5a9-b2c3-4381-85f9-c05b9fb3f1b3\"",
+    "id": "/subscriptions/1b7c0632-e0bb-4852-a555-579cd8c2208e/resourceGroups/clibased/providers/Microsoft.Network/networkSecurityGroups/MyNSG",
+    "location": "eastus",
+    "name": "MyNSG",
+    "provisioningState": "Succeeded",
+    "resourceGroup": "clibased",
+    "resourceGuid": "fd5a918e-c605-46f7-9354-a5772e567de2",
+    "securityRules": [],
+    "type": "Microsoft.Network/networkSecurityGroups"
+  }
+}
+
+Step 5:  Create Network Interface
+
+Command to use :
+
+C:\Users\tarun>az network nic create --resource-group clibased --name MyNIC --vnet-name MyVNet --subnet MySubnet --network-security-group MyNSG --public-ip-address MyPublicIP
+
+
+{
+  "NewNIC": {
+    "auxiliaryMode": "None",
+    "auxiliarySku": "None",
+    "disableTcpStateTracking": false,
+    "dnsSettings": {
+      "appliedDnsServers": [],
+      "dnsServers": [],
+      "internalDomainNameSuffix": "01zufj2fgoxerfdv0cvpiiyqch.bx.internal.cloudapp.net"
+    },
+    "enableAcceleratedNetworking": false,
+    "enableIPForwarding": false,
+    "etag": "W/\"8c5b5927-70be-4ec0-a1c8-25953624c799\"",
+    "hostedWorkloads": [],
+    "id": "/subscriptions/1b7c0632-e0bb-4852-a555-579cd8c2208e/resourceGroups/clibased/providers/Microsoft.Network/networkInterfaces/MyNIC",
+    "ipConfigurations": [
+      {
+        "etag": "W/\"8c5b5927-70be-4ec0-a1c8-25953624c799\"",
+        "id": "/subscriptions/1b7c0632-e0bb-4852-a555-579cd8c2208e/resourceGroups/clibased/providers/Microsoft.Network/networkInterfaces/MyNIC/ipConfigurations/ipconfig1",
+        "name": "ipconfig1",
+        "primary": true,
+        "privateIPAddress": "10.1.0.4",
+        "privateIPAddressVersion": "IPv4",
+        "privateIPAllocationMethod": "Dynamic",
+        "provisioningState": "Succeeded",
+        "publicIPAddress": {
+          "id": "/subscriptions/1b7c0632-e0bb-4852-a555-579cd8c2208e/resourceGroups/clibased/providers/Microsoft.Network/publicIPAddresses/MyPublicIP",
+          "resourceGroup": "clibased"
+        },
+        "resourceGroup": "clibased",
+        "subnet": {
+          "id": "/subscriptions/1b7c0632-e0bb-4852-a555-579cd8c2208e/resourceGroups/clibased/providers/Microsoft.Network/virtualNetworks/MyVNet/subnets/MySubnet",
+          "resourceGroup": "clibased"
+        },
+        "type": "Microsoft.Network/networkInterfaces/ipConfigurations"
+      }
+    ],
+    "location": "eastus",
+    "name": "MyNIC",
+    "networkSecurityGroup": {
+      "id": "/subscriptions/1b7c0632-e0bb-4852-a555-579cd8c2208e/resourceGroups/clibased/providers/Microsoft.Network/networkSecurityGroups/MyNSG",
+      "resourceGroup": "clibased"
+    },
+    "nicType": "Standard",
+    "provisioningState": "Succeeded",
+    "resourceGroup": "clibased",
+    "resourceGuid": "8f492035-0dc9-49e3-840e-02d009f45606",
+    "tapConfigurations": [],
+    "type": "Microsoft.Network/networkInterfaces",
+    "vnetEncryptionSupported": false
+  }
+}
+
+Step 6:Create Virtual Machine
+C:\Users\tarun>az vm create --resource-group clibased --name MyVM --nics MyNIC --image Ubuntu2204 --admin-username azureuser --generate-ssh-keys --size Standard_B1s
+The default value of '--size' will be changed to 'Standard_D2s_v5' from 'Standard_DS1_v2' in a future release.
+{
+  "fqdns": "",
+  "id": "/subscriptions/1b7c0632-e0bb-4852-a555-579cd8c2208e/resourceGroups/clibased/providers/Microsoft.Compute/virtualMachines/MyVM",
+  "location": "eastus",
+  "macAddress": "7C-1E-52-48-AD-EE",
+  "powerState": "VM running",
+  "privateIpAddress": "10.1.0.4",
+  "publicIpAddress": "13.90.202.88",
+  "resourceGroup": "clibased",
+  "zones": ""
+}
+
+Step 7: Open Port 22 (SSH)
+
+Command to use :
+
+C:\Users\tarun>az vm open-port --resource-group clibased --name MyVM --port 22
+{
+  "defaultSecurityRules": [
+    {
+      "access": "Allow",
+      "description": "Allow inbound traffic from all VMs in VNET",
+      "destinationAddressPrefix": "VirtualNetwork",
+      "destinationAddressPrefixes": [],
+      "destinationPortRange": "*",
+      "destinationPortRanges": [],
+      "direction": "Inbound",
+      "etag": "W/\"b33b6b0c-ff90-4836-a2c9-8091a38f9040\"",
+      "id": "/subscriptions/1b7c0632-e0bb-4852-a555-579cd8c2208e/resourceGroups/clibased/providers/Microsoft.Network/networkSecurityGroups/MyNSG/defaultSecurityRules/AllowVnetInBound",
+      "name": "AllowVnetInBound",
+      "priority": 65000,
+      "protocol": "*",
+      "provisioningState": "Succeeded",
+      "resourceGroup": "clibased",
+      "sourceAddressPrefix": "VirtualNetwork",
+      "sourceAddressPrefixes": [],
+      "sourcePortRange": "*",
+      "sourcePortRanges": [],
+      "type": "Microsoft.Network/networkSecurityGroups/defaultSecurityRules"
+    },
+    {
+      "access": "Allow",
+      "description": "Allow inbound traffic from azure load balancer",
+      "destinationAddressPrefix": "*",
+      "destinationAddressPrefixes": [],
+      "destinationPortRange": "*",
+      "destinationPortRanges": [],
+      "direction": "Inbound",
+      "etag": "W/\"b33b6b0c-ff90-4836-a2c9-8091a38f9040\"",
+      "id": "/subscriptions/1b7c0632-e0bb-4852-a555-579cd8c2208e/resourceGroups/clibased/providers/Microsoft.Network/networkSecurityGroups/MyNSG/defaultSecurityRules/AllowAzureLoadBalancerInBound",
+      "name": "AllowAzureLoadBalancerInBound",
+      "priority": 65001,
+      "protocol": "*",
+      "provisioningState": "Succeeded",
+      "resourceGroup": "clibased",
+      "sourceAddressPrefix": "AzureLoadBalancer",
+      "sourceAddressPrefixes": [],
+      "sourcePortRange": "*",
+      "sourcePortRanges": [],
+      "type": "Microsoft.Network/networkSecurityGroups/defaultSecurityRules"
+    },
+    {
+      "access": "Deny",
+      "description": "Deny all inbound traffic",
+      "destinationAddressPrefix": "*",
+      "destinationAddressPrefixes": [],
+      "destinationPortRange": "*",
+      "destinationPortRanges": [],
+      "direction": "Inbound",
+      "etag": "W/\"b33b6b0c-ff90-4836-a2c9-8091a38f9040\"",
+      "id": "/subscriptions/1b7c0632-e0bb-4852-a555-579cd8c2208e/resourceGroups/clibased/providers/Microsoft.Network/networkSecurityGroups/MyNSG/defaultSecurityRules/DenyAllInBound",
+      "name": "DenyAllInBound",
+      "priority": 65500,
+      "protocol": "*",
+      "provisioningState": "Succeeded",
+      "resourceGroup": "clibased",
+      "sourceAddressPrefix": "*",
+      "sourceAddressPrefixes": [],
+      "sourcePortRange": "*",
+      "sourcePortRanges": [],
+      "type": "Microsoft.Network/networkSecurityGroups/defaultSecurityRules"
+    },
+    {
+      "access": "Allow",
+      "description": "Allow outbound traffic from all VMs to all VMs in VNET",
+      "destinationAddressPrefix": "VirtualNetwork",
+      "destinationAddressPrefixes": [],
+      "destinationPortRange": "*",
+      "destinationPortRanges": [],
+      "direction": "Outbound",
+      "etag": "W/\"b33b6b0c-ff90-4836-a2c9-8091a38f9040\"",
+      "id": "/subscriptions/1b7c0632-e0bb-4852-a555-579cd8c2208e/resourceGroups/clibased/providers/Microsoft.Network/networkSecurityGroups/MyNSG/defaultSecurityRules/AllowVnetOutBound",
+      "name": "AllowVnetOutBound",
+      "priority": 65000,
+      "protocol": "*",
+      "provisioningState": "Succeeded",
+      "resourceGroup": "clibased",
+      "sourceAddressPrefix": "VirtualNetwork",
+      "sourceAddressPrefixes": [],
+      "sourcePortRange": "*",
+      "sourcePortRanges": [],
+      "type": "Microsoft.Network/networkSecurityGroups/defaultSecurityRules"
+    },
+    {
+      "access": "Allow",
+      "description": "Allow outbound traffic from all VMs to Internet",
+      "destinationAddressPrefix": "Internet",
+      "destinationAddressPrefixes": [],
+      "destinationPortRange": "*",
+      "destinationPortRanges": [],
+      "direction": "Outbound",
+      "etag": "W/\"b33b6b0c-ff90-4836-a2c9-8091a38f9040\"",
+      "id": "/subscriptions/1b7c0632-e0bb-4852-a555-579cd8c2208e/resourceGroups/clibased/providers/Microsoft.Network/networkSecurityGroups/MyNSG/defaultSecurityRules/AllowInternetOutBound",
+      "name": "AllowInternetOutBound",
+      "priority": 65001,
+      "protocol": "*",
+      "provisioningState": "Succeeded",
+      "resourceGroup": "clibased",
+      "sourceAddressPrefix": "*",
+      "sourceAddressPrefixes": [],
+      "sourcePortRange": "*",
+      "sourcePortRanges": [],
+      "type": "Microsoft.Network/networkSecurityGroups/defaultSecurityRules"
+    },
+    {
+      "access": "Deny",
+      "description": "Deny all outbound traffic",
+      "destinationAddressPrefix": "*",
+      "destinationAddressPrefixes": [],
+      "destinationPortRange": "*",
+      "destinationPortRanges": [],
+      "direction": "Outbound",
+      "etag": "W/\"b33b6b0c-ff90-4836-a2c9-8091a38f9040\"",
+      "id": "/subscriptions/1b7c0632-e0bb-4852-a555-579cd8c2208e/resourceGroups/clibased/providers/Microsoft.Network/networkSecurityGroups/MyNSG/defaultSecurityRules/DenyAllOutBound",
+      "name": "DenyAllOutBound",
+      "priority": 65500,
+      "protocol": "*",
+      "provisioningState": "Succeeded",
+      "resourceGroup": "clibased",
+      "sourceAddressPrefix": "*",
+      "sourceAddressPrefixes": [],
+      "sourcePortRange": "*",
+      "sourcePortRanges": [],
+      "type": "Microsoft.Network/networkSecurityGroups/defaultSecurityRules"
+    }
+  ],
+  "etag": "W/\"b33b6b0c-ff90-4836-a2c9-8091a38f9040\"",
+  "id": "/subscriptions/1b7c0632-e0bb-4852-a555-579cd8c2208e/resourceGroups/clibased/providers/Microsoft.Network/networkSecurityGroups/MyNSG",
+  "location": "eastus",
+  "name": "MyNSG",
+  "networkInterfaces": [
+    {
+      "id": "/subscriptions/1b7c0632-e0bb-4852-a555-579cd8c2208e/resourceGroups/clibased/providers/Microsoft.Network/networkInterfaces/MyNIC",
+      "resourceGroup": "clibased"
+    }
+  ],
+  "provisioningState": "Succeeded",
+  "resourceGroup": "clibased",
+  "resourceGuid": "fd5a918e-c605-46f7-9354-a5772e567de2",
+  "securityRules": [
+    {
+      "access": "Allow",
+      "destinationAddressPrefix": "*",
+      "destinationAddressPrefixes": [],
+      "destinationPortRange": "22",
+      "destinationPortRanges": [],
+      "direction": "Inbound",
+      "etag": "W/\"b33b6b0c-ff90-4836-a2c9-8091a38f9040\"",
+      "id": "/subscriptions/1b7c0632-e0bb-4852-a555-579cd8c2208e/resourceGroups/clibased/providers/Microsoft.Network/networkSecurityGroups/MyNSG/securityRules/open-port-22",
+      "name": "open-port-22",
+      "priority": 900,
+      "protocol": "*",
+      "provisioningState": "Succeeded",
+      "resourceGroup": "clibased",
+      "sourceAddressPrefix": "*",
+      "sourceAddressPrefixes": [],
+      "sourcePortRange": "*",
+      "sourcePortRanges": [],
+      "type": "Microsoft.Network/networkSecurityGroups/securityRules"
+    }
+  ],
+  "type": "Microsoft.Network/networkSecurityGroups"
+}

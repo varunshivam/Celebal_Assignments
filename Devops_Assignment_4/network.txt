@@ -1,0 +1,17 @@
+varun@LAPTOP-19ISMTVG:~$ docker network ls
+NETWORK ID     NAME            DRIVER    SCOPE
+4a23448dc3c5   bridge          bridge    local
+0f5538b9b1ea   host            host      local
+8462ba417e88   none            null      local
+89a7c52cbe38   varun_default   bridge    local
+varun@LAPTOP-19ISMTVG:~$ docker network create Bridge_network
+55a3ae6d51fc55f00db774bbef7e6993244f5f8a7d0e72ed6da1cb2588e771d2
+varun@LAPTOP-19ISMTVG:~$ docker network ls
+NETWORK ID     NAME             DRIVER    SCOPE
+55a3ae6d51fc   Bridge_network   bridge    local//# New bridge network created
+4a23448dc3c5   bridge           bridge    local
+0f5538b9b1ea   host             host      local
+8462ba417e88   none             null      local
+89a7c52cbe38   varun_default    bridge    local
+varun@LAPTOP-19ISMTVG:~$
+

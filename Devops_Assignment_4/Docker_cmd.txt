@@ -1,0 +1,30 @@
+varun@LAPTOP-19ISMTVG MINGW64 ~/desktop/Assignments/Devops_Assignment_4 (master)
+$ docker ps
+CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+
+varun@LAPTOP-19ISMTVG MINGW64 ~/desktop/Assignments/Devops_Assignment_4 (master)
+$ docker ps -a
+CONTAINER ID   IMAGE           COMMAND                  CREATED        STATUS                      PORTS     NAMES
+0a632732c944   mongo-express   "/sbin/tini -- /dock…"   12 hours ago   Exited (143) 12 hours ago             varun-mongo-express-1
+3e3ec50384b0   mongo           "docker-entrypoint.s…"   12 hours ago   Exited (0) 12 hours ago               varun-mongo-1
+74389f8041b6   cb318c4cc1a8    "echo 'Hello World..…"   3 days ago     Exited (0) 3 days ago                 quizzical_kilby
+1b557e157581   cb318c4cc1a8    "echo 'Hello World..…"   5 days ago     Exited (0) 5 days ago                 gallant_zhukovsky
+
+varun@LAPTOP-19ISMTVG MINGW64 ~/desktop/Assignments/Devops_Assignment_4 (master)
+$ docker images
+REPOSITORY        TAG       IMAGE ID       CREATED         SIZE
+jenkins/jenkins   lts       f4607803bd1e   3 days ago      796MB
+nginx             latest    dc53c8f25a10   4 days ago      279MB
+myimage1          1.0       cb318c4cc1a8   5 days ago      224MB
+mongo             latest    98028cf281bb   3 weeks ago     1.2GB
+redis             latest    1b835e5a8d5d   4 weeks ago     188MB
+mongo-express     latest    1b23d7976f02   15 months ago   286MB
+
+varun@LAPTOP-19ISMTVG MINGW64 ~/desktop/Assignments/Devops_Assignment_4 (master)
+$ docker network ls
+NETWORK ID     NAME            DRIVER    SCOPE
+53610dd04824   bridge          bridge    local
+0f5538b9b1ea   host            host      local
+8462ba417e88   none            null      local
+89a7c52cbe38   varun_default   bridge    local
+

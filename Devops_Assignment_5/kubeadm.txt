@@ -1,0 +1,101 @@
+**Creating a Kubernetes Cluster using kubeadm (by Varun)**
+
+This guide explains how I created a Kubernetes cluster on my system using kubeadm.
+
+---
+
+### What I Used
+
+* Ubuntu-based VMs
+* kubeadm and kubelet installed on all nodes
+* Docker as the container runtime
+* Proper networking between nodes
+
+---
+
+### Steps I Followed
+
+#### 1. Installed Required Components
+
+First, I installed Docker and Kubernetes components:
+
+```bash
+sudo apt update
+sudo apt install -y docker.io
+sudo systemctl enable docker && sudo systemctl start docker
+
+sudo apt install -y apt-transport-https curl
+curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
+sudo apt update
+sudo apt install -y kubelet kubeadm kubectl
+sudo apt-mark hold kubelet kubeadm kubectl
+```
+
+#### 2. Disabled Swap
+
+```bash
+sudo swapoff -a
+sudo sed -i '/ swap / s/^/#/' /etc/fstab
+```
+
+#### 3. Initialized the Control Plane
+
+On the master node:
+
+```bash
+sudo kubeadm init --pod-network-cidr=192.168.0.0/16
+```
+
+After initialization, I ran the following to configure `kubectl`:
+
+```bash
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+```
+
+#### 4. Installed a Pod Network Add-on
+
+I used Calico for the pod network:
+
+```bash
+kubectl apply -f https://docs.projectcalico.org/v3.25/manifests/calico.yaml
+```
+
+#### 5. Joined Worker Nodes
+
+On each worker node, I ran the join command printed by the master node, which looked like:
+
+```bash
+sudo kubeadm join <master-ip>:6443 --token <token> --discovery-token-ca-cert-hash sha256:<hash>
+```
+
+#### 6. Verified the Cluster
+
+On the control plane:
+
+```bash
+kubectl get nodes
+```
+
+All nodes were listed and ready.
+
+#### 7. Allowed Scheduling on Master (Optional)
+
+If I wanted to schedule pods on the master node:
+
+```bash
+kubectl taint nodes --all node-role.kubernetes.io/control-plane-
+```
+
+---
+
+### Notes
+
+* The default container runtime used was Docker.
+* I made sure ports were open and all nodes could ping each other.
+* I kept the `kubeadm join` command safe in case I wanted to add more nodes later.
+
+---
+

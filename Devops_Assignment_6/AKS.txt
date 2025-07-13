@@ -1,0 +1,101 @@
+varun@AzureVM:~$ az login
+[
+  {
+    "cloudName": "AzureCloud",
+    "id": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+    "isDefault": true,
+    "name": "My Azure Subscription",
+    "state": "Enabled",
+    "tenantId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+    "user": {
+      "name": "varun@example.com",
+      "type": "user"
+    }
+  }
+]
+
+varun@AzureVM:~$ az provider register --namespace Microsoft.ContainerService
+{
+  "namespace": "Microsoft.ContainerService",
+  "registrationState": "Registered",
+  ...
+}
+
+varun@AzureVM:~$ az group create --name myResourceGroup --location eastus
+{
+  "id": "/subscriptions/xxx/resourceGroups/myResourceGroup",
+  "location": "eastus",
+  "name": "myResourceGroup",
+  "properties": {
+    "provisioningState": "Succeeded"
+  }
+}
+
+varun@AzureVM:~$ az aks create --resource-group myResourceGroup --name myAKSCluster --node-count 2 --enable-addons monitoring --generate-ssh-keys
+...
+{
+  "agentPoolProfiles": [
+    {
+      "count": 2,
+      "name": "nodepool1",
+      "osType": "Linux",
+      ...
+    }
+  ],
+  "dnsPrefix": "myakscluster-dns-xyz",
+  "kubernetesVersion": "1.29.2",
+  "location": "eastus",
+  "name": "myAKSCluster",
+  "provisioningState": "Succeeded",
+  ...
+}
+
+varun@AzureVM:~$ az aks get-credentials --resource-group myResourceGroup --name myAKSCluster
+Merged "myAKSCluster" as current context in /home/varun/.kube/config
+
+varun@AzureVM:~$ kubectl get nodes
+NAME                                STATUS   ROLES   AGE   VERSION
+aks-nodepool1-xxxxx-vmss000000      Ready    agent   2m    v1.29.2
+aks-nodepool1-xxxxx-vmss000001      Ready    agent   2m    v1.29.2
+
+varun@AzureVM:~$ az aks scale --resource-group myResourceGroup --name myAKSCluster --node-count 3
+{
+  "agentPoolProfiles": [
+    {
+      "count": 3,
+      "name": "nodepool1",
+      ...
+    }
+  ],
+  "provisioningState": "Succeeded",
+  ...
+}
+
+varun@AzureVM:~$ kubectl get nodes
+NAME                                STATUS   ROLES   AGE   VERSION
+aks-nodepool1-xxxxx-vmss000000      Ready    agent   5m    v1.29.2
+aks-nodepool1-xxxxx-vmss000001      Ready    agent   5m    v1.29.2
+aks-nodepool1-xxxxx-vmss000002      Ready    agent   1m    v1.29.2
+
+varun@AzureVM:~$ az aks get-upgrades --resource-group myResourceGroup --name myAKSCluster
+{
+  "id": "...",
+  "name": "myAKSCluster",
+  "resourceGroup": "myResourceGroup",
+  "controlPlaneProfile": {
+    "kubernetesVersion": "1.29.2",
+    "latestKubernetesVersion": "1.30.0",
+    ...
+  }
+}
+
+varun@AzureVM:~$ az aks upgrade --resource-group myResourceGroup --name myAKSCluster --kubernetes-version 1.30.0
+...
+This operation will upgrade your cluster to Kubernetes version 1.30.0. Are you sure? (y/n): y
+Upgrading...
+Successfully upgraded to Kubernetes version 1.30.0.
+
+varun@AzureVM:~$ kubectl version --short
+Client Version: v1.30.0
+Server Version: v1.30.0
+

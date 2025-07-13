@@ -1,0 +1,31 @@
+ PersistentVolume (PV) and PersistentVolumeClaim (PVC) – 
+
+
+In Kubernetes, if a pod restarts or moves to another node, its data usually gets lost. To solve this, Kubernetes provides a way to store data permanently using Persistent Volumes (PV) and Persistent Volume Claims (PVC).
+
+## PersistentVolume (PV)
+A PersistentVolume is a piece of storage in the cluster that’s been provisioned by an admin or dynamically created.
+
+It’s a resource in the cluster, just like a node is.
+
+It represents actual storage from local disks, NFS, cloud storage, etc.
+
+PVs are defined and managed independently of pods.
+
+## PersistentVolumeClaim (PVC)
+A PersistentVolumeClaim is a request for storage made by a user (or pod).
+
+It asks for a specific amount of storage and access mode (like read/write).
+
+When a PVC is created, Kubernetes tries to bind it to a suitable PV.
+
+Once bound, the pod can use that volume to store and access data permanently.
+
+## How They Work Together
+Admin sets up a PV.
+
+User (or pod) creates a PVC asking for storage.
+
+Kubernetes matches the PVC with a PV.
+
+The pod uses that volume and data remains even if the pod restarts.

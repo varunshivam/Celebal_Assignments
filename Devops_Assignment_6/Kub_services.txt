@@ -1,0 +1,12 @@
+##Kubernetes Service Types Explained 
+
+In Kubernetes, services make sure pods can communicate properly and stay accessible, whether inside or outside the cluster. I focused on the three most common service types: ClusterIP, NodePort, and LoadBalancer.
+
+## 1. ClusterIP (Default)
+This is the default service type in Kubernetes. It allows communication only within the cluster. That means only other pods inside the same cluster can access it. It's mainly used for internal communication between services, like when a frontend talks to a backend.
+
+## 2. NodePort
+This service type makes the app accessible outside the cluster by exposing it on a static port on each node. I can reach the app using the IP of any node in the cluster and the assigned port. It's a good option when testing or accessing services in a local setup or without a load balancer.
+
+## 3. LoadBalancer
+This is used when Kubernetes is running on a cloud platform like AWS, Azure, or GCP. It provisions an external load balancer and gives a public IP, making it easier to access the service from anywhere. It’s typically used for production deployments where stable external access is needed.

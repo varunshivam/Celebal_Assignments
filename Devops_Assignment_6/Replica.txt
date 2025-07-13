@@ -1,0 +1,49 @@
+varun@LAPTOP:~$ kubectl create rc nginx-rc --image=nginx --replicas=2 --dry-run=client -o yaml > nginx-rc.yaml
+varun@LAPTOP:~$ kubectl apply -f nginx-rc.yaml
+replicationcontroller/nginx-rc created
+
+varun@LAPTOP:~$ kubectl get rc
+NAME       DESIRED   CURRENT   READY   AGE
+nginx-rc   2         2         2       20s
+
+--------------------------------------------------
+
+varun@LAPTOP:~$ kubectl create rs nginx-rs --image=nginx --replicas=2 --dry-run=client -o yaml > nginx-rs.yaml
+# (edited nginx-rs.yaml to include apiVersion: apps/v1 and kind: ReplicaSet)
+
+varun@LAPTOP:~$ kubectl apply -f nginx-rs.yaml
+replicaset.apps/nginx-rs created
+
+varun@LAPTOP:~$ kubectl get rs
+NAME       DESIRED   CURRENT   READY   AGE
+nginx-rs   2         2         2       18s
+
+--------------------------------------------------
+
+varun@LAPTOP:~$ kubectl create deployment nginx-deploy --image=nginx --replicas=2
+deployment.apps/nginx-deploy created
+
+varun@LAPTOP:~$ kubectl get deployments
+NAME           READY   UP-TO-DATE   AVAILABLE   AGE
+nginx-deploy   2/2     2            2           15s
+
+varun@LAPTOP:~$ kubectl rollout status deployment nginx-deploy
+deployment "nginx-deploy" successfully rolled out
+
+
+Advantages:
+
+Maintains a stable number of replicas.
+
+Automatically replaces failed pods.
+
+
+
+
+Disadvantages:
+
+Does not support label selectors with set-based requirements.
+
+Lacks support for rolling updates.
+
+Mostly replaced by ReplicaSet/Deployment.

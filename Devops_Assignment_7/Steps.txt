@@ -1,0 +1,119 @@
+1. Create a project with different user groups and implement group policies
+Logged into Azure DevOps.
+
+Clicked on "New Project", gave it a name, kept visibility Private, and created it.
+
+Went to Project Settings > Permissions.
+
+Created custom groups like "Developers", "Testers", and "Admins" using the “New Group” option.
+
+Added users manually into each group using Add > User Email.
+
+Set permissions accordingly:
+
+Admins got full rights.
+
+Developers could read/write to repos.
+
+Testers only had view access.
+
+2. Apply branch policies so only admins can access master
+Went to Repos > Branches, clicked the ⋮ next to master.
+
+Opened Branch Policies, enabled options:
+
+Required reviewers
+
+Prevent direct pushes
+
+In Branch Security, removed write access from Developers.
+
+Gave only Admin group the Contribute permission.
+
+3. Apply branch security and locks
+Same place (Repos > Branches), clicked Security.
+
+Selected master branch and disabled push access for everyone except Admins.
+
+Clicked Lock branch from the context menu to make sure no accidental changes go through.
+
+4. Apply branch filters and path filters
+While editing a branch policy, added branch filter as:
+
+Include: master
+
+Exclude: feature/*
+
+In path filters, included only folders relevant to main functionality.
+
+For example: src/main/**
+
+5. Apply a pull request
+Created a new branch feature/login from DevOps.
+
+Made a commit and pushed it.
+
+Clicked Create Pull Request, selected base as master.
+
+Assigned reviewers and added a comment.
+
+Submitted it for review.
+
+6. Apply branch policy and branch security
+Opened Branch Policies for master.
+
+Set:
+
+Minimum number of reviewers = 1
+
+Checked “Check for linked work items”
+
+Enabled build validation
+
+In Security, removed push rights for developers.
+
+7. Apply triggers in build and release
+Went to Pipelines > Pipelines and opened an existing YAML pipeline.
+
+In the YAML file:
+
+yaml
+Copy
+Edit
+trigger:
+  branches:
+    include:
+      - master
+This ensured that pipeline would run automatically when code is pushed to master.
+
+8. Apply gates to the pipeline
+Opened Pipelines > Releases, edited a release pipeline.
+
+In Pre-deployment conditions, enabled Gates.
+
+Added a gate like:
+
+“Invoke REST API”
+
+or “Check Azure Monitor alerts”
+
+Set timeout and retry intervals.
+
+9. Apply security so contributors can raise PRs but not merge
+Opened Repos > Branches > master > Security.
+
+Set Contribute and Bypass policies when pushing to Deny for Contributors.
+
+Enabled pull request policies (review, work item linking).
+
+Result: Contributors can submit PRs but cannot directly merge without approval.
+
+10. Use work items in pipelines
+Created a work item (Bug or Task) in Boards.
+
+Linked the work item ID in the commit message:
+git commit -m "Fix login issue #123"
+
+This automatically linked it in the pipeline build summary.
+
+In Pipelines > Settings, enabled work item tracking for builds and releases.

@@ -1,0 +1,137 @@
+ 1. Configure dashboard and queries for work items
+To keep track of the team's progress, I first created a query using Azure DevOps Boards. I navigated to Boards > Queries, then built a custom query that filtered tasks based on states like "Active", "Resolved", and "Closed". Once I had the query ready, I pinned the results to a dashboard.
+
+On the dashboard, I added widgets like "Query Results", "Charts", and "Assigned to me" to visualize the status of work items. This helps the team see what's pending, what’s assigned, and what’s done at a glance.
+
+📌 Why it’s useful: Dashboards make it easier to monitor team progress in real time without digging into each board or sprint.
+
+✅ 2. Use pipeline variables while configuring pipelines
+When configuring a YAML pipeline, I used pipeline variables to make the script flexible and easy to maintain. For example:
+
+yaml
+Copy
+Edit
+variables:
+  buildConfiguration: 'Release'
+Then I referenced the variable like this:
+
+yaml
+Copy
+Edit
+dotnet build --configuration $(buildConfiguration)
+This way, if I need to change the build type (e.g., Debug), I just update the variable.
+
+📌 Why it’s useful: It helps avoid hardcoding values and supports easier environment management.
+
+✅ 3. Use variable and task groups in pipelines with stage scopes
+To make variable management cleaner across multiple stages, I used Variable Groups. I created a group in the Library section and added keys like appName, environment, etc.
+
+Then in the pipeline YAML, I linked it like this:
+
+yaml
+Copy
+Edit
+variables:
+- group: my-variable-group
+Also, I used Task Groups for reusable logic (like build + publish steps), and scoped them to specific stages to ensure isolation between dev, staging, and prod deployments.
+
+📌 Why it’s useful: It centralizes configuration and avoids duplication.
+
+✅ 4. Create a service connection
+To deploy to Azure, I created a Service Connection from Project Settings > Service connections. I selected Azure Resource Manager and used service principal authentication.
+
+Once configured, I used it in my pipeline like this:
+
+yaml
+Copy
+Edit
+azureSubscription: 'My Azure Service Connection'
+📌 Why it’s useful: This allows Azure DevOps pipelines to securely interact with Azure services like ACR, AKS, and App Services.
+
+✅ 5. Create a Linux/Windows self-hosted agent
+I followed these steps:
+
+On Azure DevOps, I went to Agent Pools and created a new pool.
+
+I downloaded the agent package on my Linux VM.
+
+Extracted it, ran the config script, and connected it to my DevOps org.
+
+Finally, I ran the agent using ./svc.sh install and start.
+
+📌 Why it’s useful: Self-hosted agents are faster and give you more control, especially when custom dependencies or large builds are involved.
+
+✅ 6. Apply pre and post-deployment approvers in the release pipeline
+Inside the classic Release pipeline, I selected a stage and went to Pre-deployment conditions. There, I added approvers (team leads, testers, etc.).
+
+I also did the same for Post-deployment, which allows validation before proceeding to the next stage.
+
+📌 Why it’s useful: Adds an approval layer before and after deployments for safety and governance.
+
+✅ 7. CI/CD pipeline: Build and push Docker image to ACR, deploy to AKS
+Steps I followed:
+
+Docker build inside pipeline:
+
+yaml
+Copy
+Edit
+docker build -t myacr.azurecr.io/myapp:$(Build.BuildId) .
+docker push myacr.azurecr.io/myapp:$(Build.BuildId)
+Deploy to AKS using kubectl apply -f with the updated image tag.
+
+📌 Why it’s useful: Automates container deployment to Kubernetes, ensuring quick, scalable releases.
+
+✅ 8. CI/CD pipeline: Build and push Docker image to ACR, deploy to ACI
+Same as above, but instead of AKS, I deployed to Azure Container Instances:
+
+yaml
+Copy
+Edit
+az container create \
+  --resource-group myRG \
+  --name mycontainer \
+  --image myacr.azurecr.io/myapp:$(Build.BuildId) \
+  --registry-login-server myacr.azurecr.io \
+  --registry-username $(acrUsername) \
+  --registry-password $(acrPassword)
+📌 Why it’s useful: ACI is great for quick, cost-effective container deployments.
+
+✅ 9. CI/CD pipeline: Build a .NET application and deploy to Azure App Service
+Steps:
+
+Used DotNetCoreCLI@2 to build and publish.
+
+Used AzureWebApp@1 task to deploy:
+
+yaml
+Copy
+Edit
+- task: AzureWebApp@1
+  inputs:
+    azureSubscription: 'MyServiceConnection'
+    appName: 'my-dotnet-app'
+    package: '$(System.ArtifactsDirectory)/**/*.zip'
+📌 Why it’s useful: It simplifies .NET deployments and is ideal for web applications on PaaS.
+
+✅ 10. CI/CD pipeline: Build a React app and deploy to Azure VM
+Steps:
+
+Built React app using:
+
+yaml
+Copy
+Edit
+npm install
+npm run build
+Used SSH deployment to copy files to Azure VM:
+
+yaml
+Copy
+Edit
+- task: CopyFilesOverSSH@0
+  inputs:
+    sshEndpoint: 'MyAzureVM'
+    sourceFolder: '$(Build.ArtifactStagingDirectory)/build'
+    targetFolder: '/var/www/myapp'
+📌 Why it’s useful: React apps can be easily hosted on Azure VMs with custom Nginx/Apache setups.
